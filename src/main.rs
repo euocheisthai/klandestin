@@ -65,10 +65,10 @@ fn log_message(message: &str, username: Option<&str>) -> std::io::Result<()> {
 
     let now = Local::now();
     let timestamp = now.format("%Y-%m-%d %H:%M:%S");
-    
+
     match username {
-        Some(name) => writeln!(file, "[{timestamp}] @{name}: {message}")?,
-        None => writeln!(file, "[{timestamp}] {message}")?,
+        Some(name) => writeln!(file, "[{timestamp}] @{name}:\n{message}")?,
+        None => writeln!(file, "[{timestamp}]\n{message}")?,
     }
     
     Ok(())
