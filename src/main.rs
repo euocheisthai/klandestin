@@ -4,6 +4,8 @@ use teloxide::{prelude::*, utils::command::BotCommands};
 use teloxide_core::types::Message;
 use tokio::sync::Mutex;
 
+const STATUS_MAX_LENGTH: usize = 50;
+
 #[derive(BotCommands, Clone)]
 #[command(
     rename_rule = "lowercase",
@@ -57,6 +59,7 @@ fn load_rc() -> std::io::Result<i64> {
 fn log_message(message: &str, username: Option<&str>) -> std::io::Result<()> {
     let home_dir = dirs::home_dir().expect("Yuor homeless");
     let log_path = home_dir.join("klandestin_log");
+    let status_path = home_dir.join("klandestin_current");
 
     let mut file = OpenOptions::new()
         .create(true)
@@ -70,8 +73,31 @@ fn log_message(message: &str, username: Option<&str>) -> std::io::Result<()> {
         Some(name) => writeln!(file, "[{timestamp}] @{name}:\n{message}")?,
         None => writeln!(file, "[{timestamp}]\n{message}")?,
     }
-    
+
+    let short_message = prepare_status_text(message);
+    {
+        let mut file = std::fs::OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open(status_path)?;
+
+        writeln!(file, "{short_message}")?;
+    }
+
     Ok(())
+}
+
+fn prepare_status_text(message: &str) -> String {
+    let first_line = message.lines().next().unwrap_or("");
+    let mut full_text = format!("{}", first_line);
+
+    if full_text.len() > STATUS_MAX_LENGTH {
+        full_text.truncate(STATUS_MAX_LENGTH);
+        full_text.push_str("...");
+    }
+
+    full_text
 }
 
 #[tokio::main]
