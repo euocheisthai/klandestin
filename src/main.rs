@@ -1,8 +1,8 @@
 use chrono::Local;
-use std::{env, fs::OpenOptions, io::Write, path::PathBuf, sync::Arc};
+use std::{fs::OpenOptions, io::Write, sync::Arc};
 use teloxide::{prelude::*, utils::command::BotCommands};
 use teloxide_core::types::Message;
-use tokio::sync::Mutex;
+use tokio;
 
 const STATUS_MAX_LENGTH: usize = 50;
 
