@@ -59,7 +59,7 @@ fn load_rc() -> std::io::Result<i64> {
 fn log_message(message: &str, username: Option<&str>) -> std::io::Result<()> {
     let home_dir = dirs::home_dir().expect("Yuor homeless");
     let log_path = home_dir.join("klandestin_log");
-    let status_path = home_dir.join("klandestin_current");
+    let status_path = home_dir.join(".klandestin_current");
 
     let mut file = OpenOptions::new()
         .create(true)
